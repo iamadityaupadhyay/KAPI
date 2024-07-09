@@ -23,7 +23,7 @@ def get_image_paths_gst(queryset, base_path):
 
 def add_images(elements, image_paths, title, styles):
     if image_paths:
-        elements.append(Paragraph(title, styles['Normal']))
+        elements.append(Paragraph(title, styles['Heading2']))
         
         max_width, max_height = A4[0] - 2 * inch, A4[1] - 2 * inch 
 
@@ -63,35 +63,64 @@ def generate_combined_report(applicant_id):
    
     try :
        applicant_images = get_image_paths(ApplicantImage.objects.filter(applicant=applicant), base_path)
-       print(applicant_images)
+
     except :
         applicant_images=None
     try:
         coapplicant_images = get_image_paths(CoApplicantImage.objects.filter(coapplicant=co_applicant), base_path)
-        print(coapplicant_images)
+
     except :
         coapplicant_images = None
     try:
         guarantor_images = get_image_paths(GuarantorImage.objects.filter(guarantor=guarantor), base_path).first()
     except:
         guarantor_images = None
+    # Images Of Applicant
     try:
-        adhar_images = get_image_paths_adhar(AdharImages.objects.filter(applicant=applicant), base_path)
-        print(adhar_images)
+        adhar_images_applicant = get_image_paths_adhar(AdharImagesOfApplicant.objects.filter(applicant=applicant), base_path)
+
     except:
-        adhar_images = None
+        adhar_images_applicant = None
     try:
-        pan_images = get_image_paths_pan(PanImages.objects.filter(applicant=applicant), base_path)
+        pan_images_applicant = get_image_paths_pan(PanImagesOfApplicant.objects.filter(applicant=applicant), base_path)
     except:
-        pan_images = None
+        pan_images_applicant = None
     try:
-        gst_images = get_image_paths_gst(GstImages.objects.filter(applicant=applicant), base_path)
+        gst_images_applicant = get_image_paths_gst(GstImagesOfApplicant.objects.filter(applicant=applicant), base_path)
     except:
-        gst_images = None
+        gst_images_applicant = None
     
+    # Images of CoApplicant
+    try:
+        adhar_images_coapplicant = get_image_paths_adhar(AdharImagesOfCoApplicant.objects.filter(co_applicant=co_applicant), base_path)
+    except:
+        adhar_images_coapplicant = None
+    try:
+        pan_images_coapplicant = get_image_paths_pan(PanImagesOfCoApplicant.objects.filter(co_applicant=co_applicant), base_path)
+    except:
+        pan_images_coapplicant = None
+    try:
+        gst_images_coapplicant = get_image_paths_gst(GstImagesOfCoApplicant.objects.filter(co_applicant=co_applicant), base_path)
+    except:
+        gst_images_coapplicant = None
+    
+    try:
+        adhar_images_guarantor = get_image_paths_adhar(AdharImagesOfGuarantor.objects.filter(guarantor=guarantor), base_path)
+
+    except:
+        adhar_images_guarantor = None
+    try:
+        pan_images_guarantor = get_image_paths_pan(PanImagesOfGuarantor.objects.filter(guarantor=guarantor), base_path)
+    except:
+        pan_images_guarantor = None
+    try:
+        gst_images_guarantor = get_image_paths_gst(GstImagesOfGuarantor.objects.filter(guarantor=guarantor), base_path)
+    except:
+        gst_images_guarantor = None
+        
     try :
        applicant_images_business = get_image_paths(ApplicantImageBusiness.objects.filter(applicant=applicant), base_path)
-       
+    
     except :
         applicant_images_business=None
     try:
@@ -108,7 +137,7 @@ def generate_combined_report(applicant_id):
     insurance_details =InsuranceDetails.objects.filter(applicant=applicant).first()
     manufacturing_entities=ManufacturingEntities.objects.filter(applicant=applicant).first()
     properties_proposed=PropertiesProposed.objects.filter(applicant=applicant).first()
-    other_particular =OtherParticulars.objects.filter(applicant=applicant).first()
+    other_particular =OtherParticulars.objects.filter(applicant=applicant).all()
     itr_verification=ItrVerification.objects.filter(applicant=applicant).first()
     balance_sheet =BalanceSheetAndPLAccount.objects.filter(applicant=applicant).first()
     
@@ -147,8 +176,11 @@ def generate_combined_report(applicant_id):
     
     
     elements.append(Paragraph(f"<u>Applicant: {applicant.rv_name}</u>", centered_style))
+    elements.append(Spacer(1, 3))
     elements.append(Paragraph(f"<u>CoApplicant: {co_applicant.rv_name if co_applicant else 'N/A'}</u>", centered_style))
+    elements.append(Spacer(1, 3))
     elements.append(Paragraph(f"<u>Guarantor:{guarantor.rv_name if guarantor else 'N/A'}</u>", centered_style))
+    elements.append(Spacer(1, 3))
     elements.append(Spacer(1, 20))
 
     # Bank Report
@@ -665,8 +697,8 @@ def generate_combined_report(applicant_id):
         
           ]
     if other_particular:
-        for month,purchases,sale in enumerate(other_particular,start=1):
-            data_table.append([month,purchases,sale])
+     for month, other in enumerate(other_particular, start=1):
+        data_table.append([month, other.purchases, other.sales])
         
     data_table_style = Table(data_table, colWidths=[6 * cm,5*cm, 5 * cm])
     data_table_style.setStyle(TableStyle([
@@ -687,11 +719,8 @@ def generate_combined_report(applicant_id):
         ["Name of the Applicant", " Year ", " Net Income "],
         [applicant.rv_name if applicant else "N/A",balance_sheet.year1 if balance_sheet else "N/A",balance_sheet.net_income1 if balance_sheet else "N/A"],
         [applicant.rv_name if applicant else "N/A",balance_sheet.year2 if balance_sheet else "N/A",balance_sheet.net_income2 if balance_sheet else "N/A"],
-        [applicant.rv_name if applicant else "N/A",balance_sheet.year3 if balance_sheet else "N/A",balance_sheet.net_income3 if balance_sheet else "N/A"],
-        
-       
+        [applicant.rv_name if applicant else "N/A",balance_sheet.year3 if balance_sheet else "N/A",balance_sheet.net_income3 if balance_sheet else "N/A"],   
     ]
-    
     
     data_table_style = Table(data_table, colWidths=[6 * cm,5*cm, 5 * cm])
     data_table_style.setStyle(TableStyle([
@@ -704,9 +733,12 @@ def generate_combined_report(applicant_id):
     ]))
     elements.append(data_table_style)
     elements.append(Spacer(1, 0.5 * cm)) 
-    
+    if applicant.rv_name:
+        name=applicant.rv_name.upper()
+    else :
+        name="N/A"
     #  12. LATEST ITR VERIFICATION REPORT OF: MR. ROHIT KUMAR SINH 
-    title = Paragraph(f"12. LATEST ITR VERIFICATION REPORT OF:{(applicant.rv_name).upper()} ", styleN)
+    title = Paragraph(f"12. LATEST ITR VERIFICATION REPORT OF:{name} ", styleN)
     elements.append(title)
     elements.append(Spacer(1, 0.5 * cm))
     data_table =[
@@ -791,7 +823,7 @@ def generate_combined_report(applicant_id):
 
     data_table = [
             ["15. DETAILS OF BANK ACCOUNT OF APPLICANT",""],
-            [ "Name of Applicant", applicant.rv_name],
+            [ "Name of Applicant", applicant.rv_name if applicant else "N/A"],
             [ "Bank A/C No.", applicant.rv_bank_account],
             [ "Name of the Bank", applicant.bank_name],
             [ "Remark if Any", ""],  
@@ -826,32 +858,40 @@ def generate_combined_report(applicant_id):
     ]))
     elements.append(data_table_style)
     elements.append(Spacer(1, 20))
-    elements.append(Spacer(3, 60))
-    elements.append(Spacer(1, 60))
+
     # Adding images
     add_images(elements, applicant_images, "Applicant Images", styles)
-    elements.append(Spacer(1, 20))
+    elements.append(Spacer(1, 5))
     add_images(elements, coapplicant_images, "Coapplicant Images", styles)
-    elements.append(Spacer(1, 20))
+    elements.append(Spacer(1, 5))
     add_images(elements, guarantor_images, "Guarantor Images", styles)
-    elements.append(Spacer(1, 20))
+    elements.append(Spacer(1, 5))
     add_images(elements, guarantor_images_business, "<u>Guarantor Business Verification Images</u>", styles)
-    elements.append(Spacer(1, 20))
+    elements.append(Spacer(1, 5))
     add_images(elements, coapplicant_images_business, "<u>Co-Applicant Business Verification Images</u>", styles)
-    elements.append(Spacer(1, 20))
+    elements.append(Spacer(1, 5))
     add_images(elements, applicant_images_business, "<u>Applicant Business Verification Images</u>", styles)
-    elements.append(Spacer(1, 20))
-    add_images(elements, adhar_images, "Adhar Images", styles)
-    elements.append(Spacer(1, 20))
+    elements.append(Spacer(1, 5))
+    add_images(elements, adhar_images_applicant, "Aadhar Images of Applicant", styles)
+    elements.append(Spacer(1, 5))
+    add_images(elements, adhar_images_coapplicant, "Aadhar Images of Co-Applicant", styles)
+    elements.append(Spacer(1, 5))
+    add_images(elements, adhar_images_guarantor, "Aadhar Images of Guarantor", styles)
+    elements.append(Spacer(1, 5))
 
-    add_images(elements, pan_images, "Pan Images", styles)
-    elements.append(Spacer(1, 20))
+    add_images(elements, pan_images_applicant, "Pan Images of Applicant", styles)
+    elements.append(Spacer(1, 5))
+    add_images(elements, pan_images_coapplicant, "Pan Images of Co-Applicant", styles)
+    elements.append(Spacer(1, 5))
+    add_images(elements, pan_images_guarantor, "Pan Images of Guarantor", styles)
+    elements.append(Spacer(1, 5))
   
-    add_images(elements, gst_images, "Gst Images", styles)
-    elements.append(Spacer(1, 20))
-    elements.append(Spacer(3, 60))
-
-    
+    add_images(elements, gst_images_applicant, "GST Images of Applicant", styles)
+    elements.append(Spacer(1, 5))
+    add_images(elements, gst_images_coapplicant, "GST Images of CoApplicant", styles)
+    elements.append(Spacer(1, 5))
+    add_images(elements, gst_images_guarantor, "GST Images of Guarantor", styles)
+    elements.append(Spacer(1, 5))
 
     doc.build(elements)
     return response

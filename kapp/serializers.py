@@ -40,17 +40,47 @@ class ApplicantImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ApplicantImage
         fields = ['id', 'image']
-class AdharImagesSerializer(serializers.ModelSerializer):
+class GstImagesOfApplicantSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AdharImages
+        model = GstImagesOfApplicant
         fields = ['id', 'image']
-class PanImagesSerializer(serializers.ModelSerializer):
+        
+class GstImagesOfCoApplicantSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PanImages
+        model = GstImagesOfCoApplicant
         fields = ['id', 'image']
-class GstImagesSerializer(serializers.ModelSerializer):
+        
+class GstImagesOfGuarantorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = GstImages
+        model = GstImagesOfGuarantor
+        fields = ['id', 'image']
+class PanImagesOfApplicantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PanImagesOfApplicant
+        fields = ['id', 'image']
+        
+class PanImagesOfCoApplicantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PanImagesOfCoApplicant
+        fields = ['id', 'image']
+        
+class PanImagesOfGuarantorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PanImagesOfGuarantor
+        fields = ['id', 'image']
+class AdharImagesOfApplicantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdharImagesOfApplicant
+        fields = ['id', 'image']
+        
+class AdharImagesOfCoApplicantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdharImagesOfCoApplicant
+        fields = ['id', 'image']
+        
+class AdharImagesOfGuarantorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdharImagesOfGuarantor
         fields = ['id', 'image']
 class CoApplicantImageSerializer(serializers.ModelSerializer):
     class Meta:
