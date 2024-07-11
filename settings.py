@@ -25,26 +25,10 @@ SECRET_KEY = 'django-insecure-g3t5e$za_joiv*x5ns+0f2w99arj3u54h85)6#t^qcb9n2j7ia
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['77.37.47.8']
 
 
 # Application definition
-JAZZMIN_SETTINGS = {
-    # title of the window (Will default to current_admin_site.site_title if absent or None)
-    "site_title": "Komandoor",
-
-    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_header": "Komandoor",
-
-    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_brand": "Komandoor Co.LLP",
-
-    # Logo to use for your site, must be present in static files, used for brand on top left
-    "site_logo": "images/CA.png",
-
-    # CSS classes that are applied to the logo above
-    "site_logo_classes": "",
-}
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -137,12 +121,26 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATIC_ROOT='/static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'kapp.FieldUser'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+JAZZMIN_SETTINGS = {
+    # title of the window (Will default to current_admin_site.site_title if absent or None)
+    "site_title": "Komandoor",
+
+    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_header": "Komandoor",
+
+    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_brand": ".",
+
+    # Logo to use for your site, must be present in static files, used for brand on top left
+    "site_logo": "logo.png",
+
+
+
+    # CSS classes that are applied to the logo above
+    "site_logo_classes": "",
+}

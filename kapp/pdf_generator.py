@@ -21,33 +21,47 @@ def get_image_paths_pan(queryset, base_path):
 def get_image_paths_gst(queryset, base_path):
     return [os.path.join(base_path, str(instance.gst_images)) for instance in queryset if instance.gst_images]
 
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+
 def add_images(elements, image_paths, title, styles):
     if image_paths:
         elements.append(Paragraph(title, styles['Heading2']))
         
-        max_width, max_height = A4[0] - 2 * inch, A4[1] - 2 * inch 
+        # Set smaller max dimensions for images
+        max_width, max_height = A4[0] / 2, A4[1] / 4
 
         for img_path in image_paths:
-            img = Image(img_path)
-            img.drawWidth, img.drawHeight = adjust_image_size(img, max_width, max_height)
-            elements.append(img)
-            elements.append(Spacer(1, 0.2 * inch))
-        
-        elements.append(Spacer(1, 0.5 * inch))
-
+            try:
+                img = Image(img_path)
+                img.drawWidth, img.drawHeight = adjust_image_size(img, max_width, max_height)
+                logging.info(f"Image size for {img_path}: {img.drawWidth} x {img.drawHeight}")
+                elements.append(img)
+            except Exception as e:
+                logging.error(f"Error processing image {img_path}: {e}")
 def adjust_image_size(img, max_width, max_height):
-    
-    aspect = img.drawWidth / float(img.drawHeight)
-    
-    if img.drawWidth > max_width:
+    original_width, original_height = img.drawWidth, img.drawHeight
+    aspect_ratio = original_width / float(original_height)
+
+    if original_width > max_width:
         img.drawWidth = max_width
-        img.drawHeight = max_width / aspect
-    
+        img.drawHeight = max_width / aspect_ratio
+
     if img.drawHeight > max_height:
         img.drawHeight = max_height
-        img.drawWidth = max_height * aspect
-    
+        img.drawWidth = max_height * aspect_ratio
+
+    # Final check to ensure dimensions are within bounds
+    img.drawWidth = min(img.drawWidth, max_width)
+    img.drawHeight = min(img.drawHeight, max_height)
+
     return img.drawWidth, img.drawHeight
+
+# Example usage:
+# elements = []
+# image_paths = ['path/to/image1.jpg', 'path/to
 # Business Images
 
 def generate_combined_report(applicant_id):
@@ -857,41 +871,58 @@ def generate_combined_report(applicant_id):
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
     ]))
     elements.append(data_table_style)
-    elements.append(Spacer(1, 20))
+    elements.append(Spacer(1, 0.5 * cm))
+    data_table = [
+            ["17. DETAILS OF BANK ACCOUNT OF COAPPLICANT",""],
+            ["Name of Guarantor", co_applicant.rv_name if co_applicant else "N/A"],
+            ["Bank A/C No.", co_applicant.rv_bank_account if co_applicant else "N/A"],
+            
+ 
+        ]
+    data_table_style = Table(data_table, colWidths=[9 * cm, 7 * cm])
+    data_table_style.setStyle(TableStyle([
+      ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.whitesmoke),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+    ]))
+    elements.append(data_table_style)
+    elements.append(Spacer(1, 1))
+
 
     # Adding images
     add_images(elements, applicant_images, "Applicant Images", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
     add_images(elements, coapplicant_images, "Coapplicant Images", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
     add_images(elements, guarantor_images, "Guarantor Images", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
     add_images(elements, guarantor_images_business, "<u>Guarantor Business Verification Images</u>", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
     add_images(elements, coapplicant_images_business, "<u>Co-Applicant Business Verification Images</u>", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
     add_images(elements, applicant_images_business, "<u>Applicant Business Verification Images</u>", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
     add_images(elements, adhar_images_applicant, "Aadhar Images of Applicant", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
     add_images(elements, adhar_images_coapplicant, "Aadhar Images of Co-Applicant", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
     add_images(elements, adhar_images_guarantor, "Aadhar Images of Guarantor", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
 
     add_images(elements, pan_images_applicant, "Pan Images of Applicant", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1,1))
     add_images(elements, pan_images_coapplicant, "Pan Images of Co-Applicant", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
     add_images(elements, pan_images_guarantor, "Pan Images of Guarantor", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
   
     add_images(elements, gst_images_applicant, "GST Images of Applicant", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
     add_images(elements, gst_images_coapplicant, "GST Images of CoApplicant", styles)
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 1))
     add_images(elements, gst_images_guarantor, "GST Images of Guarantor", styles)
-    elements.append(Spacer(1, 5))
-
     doc.build(elements)
     return response

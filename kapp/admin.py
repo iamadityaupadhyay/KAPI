@@ -97,6 +97,7 @@ class ApplicantAdmin(admin.ModelAdmin):
     ]
     list_display = ['rv_name', 'rv_contact_no', 'rv_aadhaar_no', 'rv_pan_no']
     actions = ['generate_pdf_report']
+    search_fields=["rv_name"]
 
     def generate_pdf_report(self, request, queryset):
         if queryset.count() == 1:
