@@ -27,7 +27,7 @@ class Loan(models.Model):
     bank_name = models.CharField(max_length=100, choices=BANK_CHOICES)
     branch_name = models.CharField(max_length=100)
     loan_type = models.CharField(max_length=100)
-    loan_amount = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
+    loan_amount = models.CharField(max_digits=20,null=True,blank=True)
 
     class Meta:
         abstract = True
@@ -43,7 +43,7 @@ class BaseApplicant(models.Model):
     rv_pan_no = models.CharField(max_length=10, blank=True, null=True, verbose_name="PAN No")
     rv_present_address = models.TextField(blank=True, null=True, verbose_name="Present Address")
     rv_permanent_address = models.TextField(blank=True, null=True, verbose_name="Permanent Address")
-    rv_premises_is = models.BooleanField(blank=True, null=True, verbose_name="Premises Is")
+    rv_premises_is = models.CharField(max_length=20,blank=True, null=True, verbose_name="Premises Is")
     rv_duration_to_stay = models.CharField(max_length=50, blank=True, null=True, verbose_name="Duration to Stay")
     rv_landmark = models.CharField(max_length=100, blank=True, null=True, verbose_name="Landmark")
     rv_OWNERSHIP_PROOF_CHOICES = (
@@ -57,7 +57,7 @@ class BaseApplicant(models.Model):
     rv_num_of_persons_earning = models.PositiveIntegerField(blank=True, null=True, verbose_name="Number of Persons Earning")
     rv_neighbour_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Neighbour Name")
     rv_neighbour_contact_no = models.CharField(max_length=15, blank=True, null=True, verbose_name="Neighbour Contact No")
-    rv_met_person_at_home = models.BooleanField(blank=True, null=True, verbose_name="Met Person at Home")
+    rv_met_person_at_home = models.CharField(max_length=20,blank=True, null=True, verbose_name="Met Person at Home")
     rv_relation_with_met_person = models.CharField(max_length=100, blank=True, null=True, verbose_name="Relation of Applicant/Co-Applicant/Guarantor with met person")
     rv_residency_status = models.CharField(max_length=50, blank=True, null=True, verbose_name="Residency Status")
     
