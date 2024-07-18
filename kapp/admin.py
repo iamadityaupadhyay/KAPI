@@ -84,6 +84,43 @@ class BackgroundVerificationInline(admin.TabularInline):
 class ItrVerificationInline(admin.TabularInline):
     model = ItrVerification
     extra = 1
+class BaseApplicantAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ('Residence Verification', {
+            'fields': (
+                'rv_bank_account', 'rv_name', 'rv_contact_no', 'rv_aadhaar_no', 'rv_pan_no', 'rv_present_address',
+                'rv_permanent_address', 'rv_premises_is', 'rv_duration_to_stay', 'rv_landmark', 'rv_ownership_proof_type',
+                'rv_e_bill_or_water_tax_document', 'rv_area_of_house', 'rv_color_of_house', 'rv_num_of_persons_living',
+                'rv_num_of_persons_earning', 'rv_neighbour_name', 'rv_neighbour_contact_no', 'rv_met_person_at_home',
+                'rv_relation_with_met_person', 'rv_residency_status'
+            )
+        }),
+        ('Employment Verification', {
+            'fields': (
+                'ev_company_name', 'ev_company_address', 'ev_date_of_joining', 'ev_designation_of_applicant',
+                'ev_details_confirmed_by', 'ev_staff_name', 'ev_staff_designation', 'ev_staff_contact_no'
+            )
+        }),
+        ('Self-employment/Profession Verification', {
+            'fields': (
+                'sev_occupation', 'sev_address', 'sev_details_confirmed_by', 'sev_relation_met_person_with_applicant'
+            )
+        }),
+        ('Business Verification', {
+            'fields': (
+                'bv_company_name', 'bv_business_address', 'bv_gstin_udyam_others_no', 'bv_num_of_employees',
+                'bv_landmark', 'bv_nature_of_business', 'bv_establishment_date', 'bv_designation_of_applicant',
+                'bv_met_person_at_business_place', 'bv_relation_met_person_with_applicant', 'bv_premises_is',
+                'bv_ownership_proof_type', 'bv_e_bill_or_water_tax_document'
+            )
+        }),
+        ('Additional Details', {
+            'fields': (
+                'rv_constitution_of_buisness', 'rv_date_of_visit'
+            )
+        }),
+    )
+
 class ApplicantAdmin(admin.ModelAdmin):
     inlines = [
         ApplicantImageInline,
@@ -129,9 +166,9 @@ class GuarantorAdmin(admin.ModelAdmin):
     
 # Registering
 admin.site.register(FieldUser)
-admin.site.register(Applicant, ApplicantAdmin)
-admin.site.register(CoApplicant,CoApplicantAdmin)
-admin.site.register(Guarantor,GuarantorAdmin)
+admin.site.register(Applicant, ApplicantAdmin,BaseApplicantAdmin)
+admin.site.register(CoApplicant,CoApplicantAdmin,BaseApplicantAdmin)
+admin.site.register(Guarantor,GuarantorAdmin,BaseApplicantAdmin)
 admin.site.register(PersonalAssetsOfProprietor)
 admin.site.register(Buyers)
 admin.site.register(Suppliers)
